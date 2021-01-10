@@ -1,20 +1,8 @@
 <?php
-/*
- * Paste <https://github.com/jordansamuel/PASTE>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License in GPL.txt for more details.
- */
- 
+
 // PHP <5.5 compatibility
-require_once('includes/password.php'); 
+require_once('includes/password.php');
+
 
 session_start();
 
@@ -33,7 +21,7 @@ $mail_type = "1";
 
 // Check if already logged in
 if (isset($_SESSION['token'])) {
-   header("Location: ./");
+    header("Location: ./");
 }
 
 // Database Connection
@@ -46,17 +34,17 @@ $query  = "SELECT * FROM site_info";
 $result = mysqli_query($con, $query);
 
 while ($row = mysqli_fetch_array($result)) {
-    $title				= Trim($row['title']);
-    $des				= Trim($row['des']);
-    $baseurl			= Trim($row['baseurl']);
-    $keyword			= Trim($row['keyword']);
-    $site_name			= Trim($row['site_name']);
-    $email				= Trim($row['email']);
-    $twit				= Trim($row['twit']);
-    $face				= Trim($row['face']);
-    $gplus				= Trim($row['gplus']);
-    $ga					= Trim($row['ga']);
-    $additional_scripts	= Trim($row['additional_scripts']);
+    $title                = Trim($row['title']);
+    $des                = Trim($row['des']);
+    $baseurl            = Trim($row['baseurl']);
+    $keyword            = Trim($row['keyword']);
+    $site_name            = Trim($row['site_name']);
+    $email                = Trim($row['email']);
+    $twit                = Trim($row['twit']);
+    $face                = Trim($row['face']);
+    $gplus                = Trim($row['gplus']);
+    $ga                    = Trim($row['ga']);
+    $additional_scripts    = Trim($row['additional_scripts']);
 }
 
 $admin_mail = $email;
@@ -68,7 +56,7 @@ $query  = "SELECT * FROM mail WHERE id='1'";
 $result = mysqli_query($con, $query);
 
 while ($row = mysqli_fetch_array($result)) {
-	$verification = Trim($row['verification']);
+    $verification = Trim($row['verification']);
     $smtp_host = Trim($row['smtp_host']);
     $smtp_user = Trim($row['smtp_username']);
     $smtp_pass = Trim($row['smtp_password']);
@@ -80,7 +68,7 @@ while ($row = mysqli_fetch_array($result)) {
 $mail_type = $smtp_protocol;
 
 // Check if IP is banned
-if ( is_banned($con, $ip) ) die($lang['banned']); // "You have been banned from ".$site_name;
+if (is_banned($con, $ip)) die($lang['banned']); // "You have been banned from ".$site_name;
 
 // Set theme and language
 $query  = "SELECT * FROM interface";
@@ -107,7 +95,7 @@ while ($row = mysqli_fetch_array($result)) {
 
 // Logout
 if (isset($_GET['logout'])) {
-	header('Location: ' . $_SERVER['HTTP_REFERER']);
+    header('Location: ' . $_SERVER['HTTP_REFERER']);
     unset($_SESSION['token']);
     unset($_SESSION['oauth_uid']);
     unset($_SESSION['username']);
@@ -138,26 +126,26 @@ if ($last_date == $date) {
     if (str_contains($data_ip, $ip)) {
         $query  = "SELECT * FROM page_view WHERE id=" . Trim($last_id);
         $result = mysqli_query($con, $query);
-        
+
         while ($row = mysqli_fetch_array($result)) {
             $last_tpage = Trim($row['tpage']);
         }
         $last_tpage = $last_tpage + 1;
-        
+
         // IP already exists, update page view
         $query = "UPDATE page_view SET tpage=$last_tpage WHERE id=" . Trim($last_id);
         mysqli_query($con, $query);
     } else {
         $query  = "SELECT * FROM page_view WHERE id=" . Trim($last_id);
         $result = mysqli_query($con, $query);
-        
+
         while ($row = mysqli_fetch_array($result)) {
             $last_tpage  = Trim($row['tpage']);
             $last_tvisit = Trim($row['tvisit']);
         }
         $last_tpage  = $last_tpage + 1;
         $last_tvisit = $last_tvisit + 1;
-        
+
         // Update both tpage and tvisit.
         $query = "UPDATE page_view SET tpage=$last_tpage,tvisit=$last_tvisit WHERE id=" . Trim($last_id);
         mysqli_query($con, $query);
@@ -167,14 +155,13 @@ if ($last_date == $date) {
     // Delete the file and clear data_ip
     unlink("tmp/temp.tdata");
     $data_ip = "";
-    
+
     // New date is created
     $query = "INSERT INTO page_view (date,tpage,tvisit) VALUES ('$date','1','1')";
     mysqli_query($con, $query);
-    
+
     // Update the IP
     file_put_contents('tmp/temp.tdata', $data_ip . "\r\n" . $ip);
-    
 }
 if (isset($_GET['resend'])) {
     if (isset($_POST['email'])) {
@@ -218,11 +205,9 @@ if (isset($_GET['resend'])) {
             } else {
                 $error = $lang['email_ver']; //"Email already verified.";
             }
-
         } else {
             $error = $lang['email_not']; // "Email not found.";
         }
-
     }
 }
 
@@ -247,7 +232,7 @@ if (isset($_GET['forgot'])) {
             }
             $new_pass     = uniqid(rand(), true);
             $new_pass_hash = password_hash($new_pass, PASSWORD_DEFAULT);
-            
+
             $query = "UPDATE users SET password='$new_pass_hash' WHERE username='$username'";
             mysqli_query($con, $query);
             if (mysqli_error($con)) {
@@ -268,17 +253,13 @@ if (isset($_GET['forgot'])) {
                 } else {
                     smtp_mail($smtp_host, $smtp_port, $smtp_auth, $smtp_user, $smtp_pass, $smtp_sec, $admin_mail, $admin_name, $sent_mail, $subject, $body);
                 }
-                
             }
-            
         } else {
             $error = $lang['email_not']; //"Email not found";  
         }
-        
     }
-    
 }
-if ($_SERVER['REQUEST_METHOD'] == POST) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Check if logged in
     if (isset($_SESSION['token'])) {
         header("Location: ./");
@@ -288,7 +269,7 @@ if ($_SERVER['REQUEST_METHOD'] == POST) {
             $username = htmlentities(trim($_POST['username']));
             $password = $_POST['password'];
             if ($username != null && $password != null) {
-                
+
                 $query  = "SELECT * FROM users WHERE username='$username'";
                 $result = mysqli_query($con, $query);
                 if (mysqli_num_rows($result) > 0) {
@@ -312,9 +293,8 @@ if ($_SERVER['REQUEST_METHOD'] == POST) {
                             $_SESSION['token']     = Md5($db_id . $username);
                             $_SESSION['oauth_uid'] = $db_oauth_uid;
                             $_SESSION['username']  = $username;
-                            
+
                             header('Location: ' . $_SERVER['HTTP_REFERER']);
-							
                         } elseif ($db_verified == "2") {
                             // User is banned
                             $error = $lang['banned'];
@@ -325,7 +305,6 @@ if ($_SERVER['REQUEST_METHOD'] == POST) {
                     } else {
                         // Password wrong
                         $error = $lang['incorrect'];
-                        
                     }
                 } else {
                     // Username not found
@@ -335,7 +314,7 @@ if ($_SERVER['REQUEST_METHOD'] == POST) {
                 $error = $lang['missingfields']; //"All fields must be filled out.";
             }
         }
-        
+
         // Register process
         if (isset($_POST['signup'])) {
             $username  = htmlentities(trim($_POST['username']));
@@ -350,45 +329,44 @@ if ($_SERVER['REQUEST_METHOD'] == POST) {
                     if (mysqli_num_rows($result) > 0) {
                         $error = $lang['userexists']; // "Username already taken.";
                     } else {
-                        
+
                         $query  = "SELECT * FROM users WHERE email_id='$email'";
                         $result = mysqli_query($con, $query);
                         if (mysqli_num_rows($result) > 0) {
                             $error = $lang['emailexists']; // "Email already registered.";
                         } else {
-								if ($verification == 'disabled') {
-									$query = "INSERT INTO users (oauth_uid,username,email_id,full_name,platform,password,verified,picture,date,ip) VALUES ('0','$username','$email','$full_name','Direct','$password','1','NONE','$date','$ip')";
-								} else {
-									$query = "INSERT INTO users (oauth_uid,username,email_id,full_name,platform,password,verified,picture,date,ip) VALUES ('0','$username','$email','$full_name','Direct','$password','0','NONE','$date','$ip')";
-								}
+                            if ($verification == 'disabled') {
+                                $query = "INSERT INTO users (oauth_uid,username,email_id,full_name,platform,password,verified,picture,date,ip) VALUES ('0','$username','$email','$full_name','Direct','$password','1','NONE','$date','$ip')";
+                            } else {
+                                $query = "INSERT INTO users (oauth_uid,username,email_id,full_name,platform,password,verified,picture,date,ip) VALUES ('0','$username','$email','$full_name','Direct','$password','0','NONE','$date','$ip')";
+                            }
                             mysqli_query($con, $query);
                             if (mysqli_error($con))
                                 $error = "Database Error";
                             else {
-								if ($verification == 'disabled') {
-									$success    = $lang['registered']; // "Your account was successfully registered.";
-								} else {
-									$success    = $lang['registered']; // "Your account was successfully registered.";
-									$protocol   = paste_protocol();
-									$verify_url = $protocol . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . "/verify.php?username=$username&code=" . Md5('4et4$55765' . $email . 'd94ereg');
-									$sent_mail  = $email;
-									$subject    = $lang['mail_acc_con']; // "$site_name Account Confirmation";
-									$body       = "
+                                if ($verification == 'disabled') {
+                                    $success    = $lang['registered']; // "Your account was successfully registered.";
+                                } else {
+                                    $success    = $lang['registered']; // "Your account was successfully registered.";
+                                    $protocol   = paste_protocol();
+                                    $verify_url = $protocol . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . "/verify.php?username=$username&code=" . Md5('4et4$55765' . $email . 'd94ereg');
+                                    $sent_mail  = $email;
+                                    $subject    = $lang['mail_acc_con']; // "$site_name Account Confirmation";
+                                    $body       = "
 			  Hello $full_name, Your $site_name account has been created. Please verify your account by clicking the link below.<br /><br />
 
 			  <a href='$verify_url' target='_self'>$verify_url</a>  <br /> <br />
 
 			  After confirming your account you can log in using your username: <b>$username</b> and the password you used when signing up.
 			  ";
-									if ($mail_type == '1') {
-										default_mail($admin_mail, $admin_name, $sent_mail, $subject, $body);
-									} else {
-										smtp_mail($smtp_host, $smtp_port, $smtp_auth, $smtp_user, $smtp_pass, $smtp_sec, $admin_mail, $admin_name, $sent_mail, $subject, $body);
-									}
-								}
+                                    if ($mail_type == '1') {
+                                        default_mail($admin_mail, $admin_name, $sent_mail, $subject, $body);
+                                    } else {
+                                        smtp_mail($smtp_host, $smtp_port, $smtp_auth, $smtp_user, $smtp_pass, $smtp_sec, $admin_mail, $admin_name, $sent_mail, $subject, $body);
+                                    }
+                                }
                             }
                         }
-
                     }
                 } else {
                     $error = $lang['usrinvalid']; // "Username not valid. Usernames can't contain special characters.";
@@ -404,4 +382,3 @@ if ($_SERVER['REQUEST_METHOD'] == POST) {
 require_once('theme/' . $default_theme . '/header.php');
 require_once('theme/' . $default_theme . '/login.php');
 require_once('theme/' . $default_theme . '/footer.php');
-?>

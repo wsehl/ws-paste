@@ -1,17 +1,4 @@
 <?php
-/*
- * Paste <https://github.com/jordansamuel/PASTE>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License in GPL.txt for more details.
- */
 
 function str_contains($haystack, $needle, $ignoreCase = false)
 {
@@ -25,16 +12,16 @@ function str_contains($haystack, $needle, $ignoreCase = false)
 
 function encrypt($value)
 {
-	$salt = $sec_key;
-	$encrypted_string=openssl_encrypt($value,"AES-256-CBC",$salt);
-	return $encrypted_string;
+    $salt = $sec_key;
+    $encrypted_string = openssl_encrypt($value, "AES-256-CBC", $salt);
+    return $encrypted_string;
 }
 
 function decrypt($value)
 {
-	$salt = $sec_key;
-	$decrypted_string=openssl_decrypt($value,"AES-256-CBC",$salt);
-	return $decrypted_string;
+    $salt = $sec_key;
+    $decrypted_string = openssl_decrypt($value, "AES-256-CBC", $salt);
+    return $decrypted_string;
 }
 
 function deleteMyPaste($con, $paste_id)
@@ -83,15 +70,17 @@ function getTotalPastes($con, $username)
     return $count;
 }
 
-function isValidUsername($str) {
+function isValidUsername($str)
+{
     return !preg_match('/[^A-Za-z0-9.#\\-$]/', $str);
 }
 
-function existingUser( $con, $username ) {
+function existingUser($con, $username)
+{
     $query = "SELECT * FROM users WHERE username = '$username'";
-    $result = mysqli_query( $con, $query );
-    $num_rows = mysqli_num_rows( $result );
-    if ( $num_rows == 0 ) {
+    $result = mysqli_query($con, $query);
+    $num_rows = mysqli_num_rows($result);
+    if ($num_rows == 0) {
         // No records. User doesn't exist.
         return false;
     } else {
@@ -112,7 +101,8 @@ function updateMyView($con, $paste_id)
     $result = mysqli_query($con, $query);
 }
 
-function conTime($secs) {
+function conTime($secs)
+{
     $bit = array(
         ' year' => $secs / 31556926 % 12,
         ' week' => $secs / 604800 % 52,
@@ -128,10 +118,13 @@ function conTime($secs) {
         if ($v == 1)
             $ret[] = $v . $k;
     }
+	
     array_splice($ret, count($ret) - 1, 0, 'and');
+	
     $ret[] = 'ago';
 
     $val = join(' ', $ret);
+	
     if (str_contains($val, "week")) {
     } else {
         $val = str_replace("and", "", $val);
@@ -139,6 +132,7 @@ function conTime($secs) {
     if (Trim($val) == "ago") {
         $val = "1 sec ago";
     }
+	
     return $val;
 }
 
@@ -247,13 +241,14 @@ function rawView($paste_id, $p_title, $p_content, $p_code)
     return $stats;
 }
 
-function embedView( $paste_id, $p_title, $p_content, $p_code, $title, $baseurl, $ges_style, $lang ) {
+function embedView($paste_id, $p_title, $p_content, $p_code, $title, $baseurl, $ges_style, $lang)
+{
     $stats = false;
-    if ( $p_content ) {
+    if ($p_content) {
         // Build the output
         $output = "<div class='paste_embed_container'>";
-            $output .= "<style>"; // Add our own styles
-            $output .= "
+        $output .= "<style>"; // Add our own styles
+        $output .= "
             .paste_embed_container {
                 font-size: 12px;
                 color: #333;
@@ -296,22 +291,22 @@ function embedView( $paste_id, $p_title, $p_content, $p_code, $title, $baseurl, 
                 background: #ffffff;
                 line-height:20px;
             }";
-            $output .= "</style>";
-            $output .= "$ges_style"; // Dynamic GeSHI Style
-            $output .= $p_content; // Paste content
-            $output .= "<div class='paste_embed_footer'>";
-			$output .= "<a href='$baseurl/$paste_id'>$p_title</a> " . $lang['embed-hosted-by'] . " <a href='$baseurl'>$title</a> | <a href='$baseurl/raw/$paste_id'>" . strtolower( $lang['view-raw'] ) . "</a>";
-			$output .= "</div>";
-			$output .= "</div>";
+        $output .= "</style>";
+        $output .= "$ges_style"; // Dynamic GeSHI Style
+        $output .= $p_content; // Paste content
+        $output .= "<div class='paste_embed_footer'>";
+        $output .= "<a href='$baseurl/$paste_id'>$p_title</a> " . $lang['embed-hosted-by'] . " <a href='$baseurl'>$title</a> | <a href='$baseurl/raw/$paste_id'>" . strtolower($lang['view-raw']) . "</a>";
+        $output .= "</div>";
+        $output .= "</div>";
 
         // Display embed content using json_encode since that escapes
         // characters well enough to satisfy javascript. http://stackoverflow.com/a/169035
-        header( 'Content-type: text/javascript; charset=utf-8;' );
-        echo 'document.write(' . json_encode( $output ) . ')';
+        header('Content-type: text/javascript; charset=utf-8;');
+        echo 'document.write(' . json_encode($output) . ')';
         $stats = true;
     } else {
         // 404
-        header( 'HTTP/1.1 404 Not Found' );
+        header('HTTP/1.1 404 Not Found');
     }
     return $stats;
 }
@@ -321,8 +316,8 @@ function addToSitemap($paste_id, $priority, $changefreq, $mod_rewrite)
     $c_date    = date('Y-m-d');
     $site_data = file_get_contents("sitemap.xml");
     $site_data = str_replace("</urlset>", "", $site_data);
-	// which protocol are we on
-	$protocol = paste_protocol();
+    // which protocol are we on
+    $protocol = paste_protocol();
 
     if ($mod_rewrite == "1") {
         $server_name = $protocol . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . "/" . $paste_id;
@@ -330,8 +325,8 @@ function addToSitemap($paste_id, $priority, $changefreq, $mod_rewrite)
         $server_name = $protocol . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . "/paste.php?id=" . $paste_id;
     }
 
-	$c_sitemap =
-'	<url>
+    $c_sitemap =
+        '	<url>
 		<loc>' . $server_name . '</loc>
 		<priority>' . $priority . '</priority>
 		<changefreq>' . $changefreq . '</changefreq>
@@ -342,26 +337,27 @@ function addToSitemap($paste_id, $priority, $changefreq, $mod_rewrite)
     $full_map  = $site_data . $c_sitemap;
     file_put_contents("sitemap.xml", $full_map);
 }
-function paste_protocol() {
 
-  $protocol = ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] == "on" ) ? 'https://' : 'http://';
-
-  return $protocol;
+function paste_protocol()
+{
+    $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? 'https://' : 'http://';
+    return $protocol;
 }
 
-function is_banned($con, $ip) {
-        $query  = "SELECT id FROM ban_user WHERE ip=?";
-        if ($stmt = mysqli_prepare($con, $query)) {
+function is_banned($con, $ip)
+{
+    $query  = "SELECT id FROM ban_user WHERE ip=?";
+    if ($stmt = mysqli_prepare($con, $query)) {
         mysqli_stmt_bind_param($stmt, "s", $ip);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_store_result($stmt);
 
-                if ( mysqli_stmt_num_rows($stmt) > 0 ) {
-                        mysqli_stmt_close($stmt);
-                        return true;
-                } else {
-                        mysqli_stmt_close($stmt);
-                        return false;
-                }
+        if (mysqli_stmt_num_rows($stmt) > 0) {
+            mysqli_stmt_close($stmt);
+            return true;
+        } else {
+            mysqli_stmt_close($stmt);
+            return false;
         }
+    }
 }

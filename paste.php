@@ -1,17 +1,4 @@
 <?php
-/*
- * Paste <https://github.com/jordansamuel/PASTE>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License in GPL.txt for more details.
- */
 
 // PHP <5.5 compatibility
 require_once('includes/password.php'); 
@@ -244,7 +231,7 @@ if (mysqli_num_rows($result) > 0) {
     
     // Download the paste   
     if (isset($_GET['download'])) {
-        if ($p_password == "NONE") {
+        if ($p_password == "NONE" || $_SESSION['username'] == 'admin' ) {
             doDownload($paste_id, $p_title, $op_content, $p_code);
             exit();
         } else {
@@ -263,7 +250,7 @@ if (mysqli_num_rows($result) > 0) {
 	
     // Raw view   
     if (isset($_GET['raw'])) {
-        if ($p_password == "NONE") {
+        if ($p_password == "NONE"  || $_SESSION['username'] == 'admin' ) {
             rawView($paste_id, $p_title, $op_content, $p_code);
             exit();
         } else {
@@ -344,7 +331,7 @@ if (mysqli_num_rows($result) > 0) {
 }
 
 require_once('theme/' . $default_theme . '/header.php');
-if ($p_password == "NONE") {
+if ($p_password == "NONE" || $_SESSION['username'] == 'admin') {
     
     // No password & diplay the paste
     
@@ -407,4 +394,3 @@ if ($p_private_error == '1') {
 
 // Footer
 require_once('theme/' . $default_theme . '/footer.php');
-?>

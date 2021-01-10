@@ -1,6 +1,10 @@
 Options +FollowSymLinks
 RewriteEngine on
 
+php_flag display_errors off
+php_value session.gc_maxlifetime 777600
+php_value session.cookie_lifetime 777600
+
 <IfModule mod_rewrite.c>
  RewriteCond %{REQUEST_FILENAME} !-f
  RewriteCond %{REQUEST_FILENAME} !-d

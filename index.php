@@ -1,26 +1,6 @@
 <?php
-/*
- * Paste <https://github.com/jordansamuel/PASTE>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License in GPL.txt for more details.
- */
- 
+
 session_start();
-
-$directory = 'install';
-
-if (file_exists($directory)) {
-    header("Location: install");
-    exit();
-}
 
 // Required functions
 require_once('config.php');
@@ -44,17 +24,17 @@ $query  = "SELECT * FROM site_info WHERE id='1'";
 $result = mysqli_query($con, $query);
 
 while ($row = mysqli_fetch_array($result)) {
-    $title				= Trim($row['title']);
-    $des				= Trim($row['des']);
-    $baseurl    		= Trim($row['baseurl']);
-    $keyword			= Trim($row['keyword']);
-    $site_name			= Trim($row['site_name']);
-    $email				= Trim($row['email']);
-    $twit				= Trim($row['twit']);
-    $face				= Trim($row['face']);
-    $gplus				= Trim($row['gplus']);
-    $ga					= Trim($row['ga']);
-    $additional_scripts	= Trim($row['additional_scripts']);
+    $title                = Trim($row['title']);
+    $des                = Trim($row['des']);
+    $baseurl            = Trim($row['baseurl']);
+    $keyword            = Trim($row['keyword']);
+    $site_name            = Trim($row['site_name']);
+    $email                = Trim($row['email']);
+    $twit                = Trim($row['twit']);
+    $face                = Trim($row['face']);
+    $gplus                = Trim($row['gplus']);
+    $ga                    = Trim($row['ga']);
+    $additional_scripts    = Trim($row['additional_scripts']);
 }
 
 // Set theme and language
@@ -116,11 +96,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     } else {
         $_SESSION['captcha_mode'] = "none";
-    }        
+    }
 }
 
 // Check if IP is banned
-if ( is_banned($con, $ip) ) die($lang['banned']); // "You have been banned from ".$site_name;
+if (is_banned($con, $ip)) die($lang['banned']); // "You have been banned from ".$site_name;
 
 // Site permissions
 $query  = "SELECT * FROM site_permissions where id='1'";
@@ -128,20 +108,20 @@ $result = mysqli_query($con, $query);
 
 while ($row = mysqli_fetch_array($result)) {
     $disableguest   = Trim($row['disableguest']);
-	$siteprivate	= Trim($row['siteprivate']);
+    $siteprivate    = Trim($row['siteprivate']);
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 } else {
     if ($disableguest == "on") {
         $noguests = "on";
-	}
-	if ($siteprivate =="on") {
-		$privatesite = "on";
     }
-	if (isset($_SESSION['username'])) {
-		$noguests = "off";
-	}
+    if ($siteprivate == "on") {
+        $privatesite = "on";
+    }
+    if (isset($_SESSION['username'])) {
+        $noguests = "off";
+    }
 }
 
 // Escape from quotes
@@ -161,7 +141,7 @@ if (get_magic_quotes_gpc()) {
 
 // Logout
 if (isset($_GET['logout'])) {
-	header('Location: ' . $_SERVER['HTTP_REFERER']);
+    header('Location: ' . $_SERVER['HTTP_REFERER']);
     unset($_SESSION['token']);
     unset($_SESSION['oauth_uid']);
     unset($_SESSION['username']);
@@ -189,26 +169,26 @@ if ($last_date == $date) {
     if (str_contains($data_ip, $ip)) {
         $query  = "SELECT * FROM page_view WHERE id=" . Trim($last_id);
         $result = mysqli_query($con, $query);
-        
+
         while ($row = mysqli_fetch_array($result)) {
             $last_tpage = Trim($row['tpage']);
         }
         $last_tpage = $last_tpage + 1;
-        
+
         // IP already exists, Update view count
         $query = "UPDATE page_view SET tpage=$last_tpage WHERE id=" . Trim($last_id);
         mysqli_query($con, $query);
     } else {
         $query  = "SELECT * FROM page_view WHERE id=" . Trim($last_id);
         $result = mysqli_query($con, $query);
-        
+
         while ($row = mysqli_fetch_array($result)) {
             $last_tpage  = Trim($row['tpage']);
             $last_tvisit = Trim($row['tvisit']);
         }
         $last_tpage  = $last_tpage + 1;
         $last_tvisit = $last_tvisit + 1;
-        
+
         // Update both tpage and tvisit.
         $query = "UPDATE page_view SET tpage=$last_tpage,tvisit=$last_tvisit WHERE id=" . Trim($last_id);
         mysqli_query($con, $query);
@@ -218,50 +198,49 @@ if ($last_date == $date) {
     // Delete the file and clear data_ip
     unlink("tmp/temp.tdata");
     $data_ip = "";
-    
+
     // New date is created
     $query = "INSERT INTO page_view (date,tpage,tvisit) VALUES ('$date','1','1')";
     mysqli_query($con, $query);
-    
+
     // Update the IP
     file_put_contents('tmp/temp.tdata', $data_ip . "\r\n" . $ip);
-    
 }
 
 // POST Handler
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	// Check if fields are empty
-	if (empty($_POST["paste_data"])) {
-		$error = $lang['empty_paste'];
-		goto OutPut;
-		exit;
-	}
-	
-	// Check if fields are only white space
-	if (trim($_POST["paste_data"]) == '') {
-		$error = $lang['empty_paste'];
-		goto OutPut;
-		exit;
-	}
+    // Check if fields are empty
+    if (empty($_POST["paste_data"])) {
+        $error = $lang['empty_paste'];
+        goto OutPut;
+        exit;
+    }
 
-	// Set our limits
-	if (mb_strlen($_POST["paste_data"], '8bit') >  1024 * 1024 * $pastelimit) {
-		$error = $lang['large_paste'];
-		goto OutPut;
-		exit;
-	}
-			
+    // Check if fields are only white space
+    if (trim($_POST["paste_data"]) == '') {
+        $error = $lang['empty_paste'];
+        goto OutPut;
+        exit;
+    }
+
+    // Set our limits
+    if (mb_strlen($_POST["paste_data"], '8bit') >  1024 * 1024 * $pastelimit) {
+        $error = $lang['large_paste'];
+        goto OutPut;
+        exit;
+    }
+
     // Check POST data status
-    if (isset($_POST['title']) And isset($_POST['paste_data'])) {
+    if (isset($_POST['title']) and isset($_POST['paste_data'])) {
         if ($cap_e == "on" && !isset($_SESSION['username'])) {
             if ($mode == "reCAPTCHA") {
-                $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=".$recaptcha_secretkey."&response=".$_POST['g-recaptcha-response']);
+                $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=" . $recaptcha_secretkey . "&response=" . $_POST['g-recaptcha-response']);
                 $response = json_decode($response, true);
-                if ( $response["success"] == false ) {
+                if ($response["success"] == false) {
                     // reCAPTCHA Errors
-                    switch( $response["error-codes"][0] ) {
+                    switch ($response["error-codes"][0]) {
                         case "missing-input-response":
-                            $error = $lang['missing-input-response']; 
+                            $error = $lang['missing-input-response'];
                             break;
                         case "missing-input-secret":
                             $error = $lang['missing-input-secret'];
@@ -287,7 +266,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         $p_title    = Trim(htmlspecialchars($_POST['title']));
-			if (strlen($p_title)==0) $p_title='Untitled';
+        if (strlen($p_title) == 0) $p_title = 'Untitled';
         $p_content  = htmlspecialchars($_POST['paste_data']);
         $p_visible  = Trim(htmlspecialchars($_POST['visibility']));
         $p_code     = Trim(htmlspecialchars($_POST['format']));
@@ -299,7 +278,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $p_password = password_hash($p_password, PASSWORD_DEFAULT);
         }
         $p_encrypt = Trim(htmlspecialchars($_POST['encrypted']));
-        
+
         if ($p_encrypt == "" || $p_encrypt == null) {
             $p_encrypt = "0";
         } else {
@@ -307,7 +286,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $p_encrypt = "1";
             $p_content = encrypt($p_content);
         }
-        
+
         if (isset($_SESSION['token'])) {
             $p_member = Trim($_SESSION['username']);
         } else {
@@ -342,15 +321,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $expires = "NULL";
                 break;
         }
+
+        date_default_timezone_set($set_default_time_zone);
+
         $p_title   = mysqli_real_escape_string($con, $p_title);
         $p_content = mysqli_real_escape_string($con, $p_content);
-        $p_date    = date('jS F Y h:i:s A');
+
+        // $p_date    = date('jS F Y H:i:s'); Datatables.js doesn't work with this date format
+        $p_date    = date('Y/m/d H:i:s');
         $date      = date('jS F Y');
         $now_time  = mktime(date("H"), date("i"), date("s"), date("n"), date("j"), date("Y"));
+
         // Edit existing paste or create new?
-        if ( isset($_POST['edit'] ) ) {
+        if (isset($_POST['edit'])) {
             $edit_paste_id = $_POST['paste_id'];
-            $query = "UPDATE pastes SET title='$p_title',content='$p_content',visible='$p_visible',code='$p_code',expiry='$expires',password='$p_password',encrypt='$p_encrypt',member='$p_member',date='$p_date',ip='$ip' WHERE id = '$edit_paste_id'";
+            $query = "UPDATE pastes SET title='$p_title',content='$p_content',visible='$p_visible',code='$p_code',expiry='$expires',password='$p_password',encrypt='$p_encrypt',date='$p_date',ip='$ip' WHERE id = '$edit_paste_id'";
         } else {
             $query = "INSERT INTO pastes (title,content,visible,code,expiry,password,encrypt,member,date,ip,now_time,views,s_date) VALUES 
             ('$p_title','$p_content','$p_visible','$p_code','$expires','$p_password','$p_encrypt','$p_member','$p_date','$ip','$now_time','0','$date')";
@@ -369,29 +354,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 addToSitemap($paste_id, $priority, $changefreq, $mod_rewrite);
             }
         }
-
     } else {
         $error = $lang['error']; // "Something went wrong";
     }
-	
-	// Redirect to paste on successful entry, or on successful edit redirect back to edited paste
-	if ( isset( $success ) ) {
-		if ( $mod_rewrite == '1' ) {
-            if ( isset( $_POST['edit'] ) ) {
+
+    // Redirect to paste on successful entry, or on successful edit redirect back to edited paste
+    if (isset($success)) {
+        if ($mod_rewrite == '1') {
+            if (isset($_POST['edit'])) {
                 $paste_url = "$edit_paste_id";
             } else {
-                $paste_url = "$success"; 
+                $paste_url = "$success";
             }
         } else {
-            if ( $_POST['edit'] ) {
+            if ($_POST['edit']) {
                 $paste_url = "paste.php?id=$edit_paste_id";
             } else {
                 $paste_url = "paste.php?id=$success";
             }
         }
-		header("Location: ".$paste_url."");
-	}
-
+        header("Location: " . $paste_url . "");
+    }
 }
 
 OutPut:
@@ -399,4 +382,3 @@ OutPut:
 require_once('theme/' . $default_theme . '/header.php');
 require_once('theme/' . $default_theme . '/main.php');
 require_once('theme/' . $default_theme . '/footer.php');
-?>

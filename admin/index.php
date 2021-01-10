@@ -59,7 +59,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Paste - Login</title>
+	<title>Admin Panel
+	</title>
   <link href="css/paste.css" rel="stylesheet">
   <style type="text/css">
     body{background: #F5F5F5;}
@@ -73,9 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 	?>
       <form action="." method="post">
-        <div class="top">
-          <h1>Paste</h1>
-        </div>
         <div class="form-area">
           <div class="group">
             <input type="text" class="form-control" id="username" name="username" placeholder="Username" value="">
