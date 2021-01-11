@@ -5,7 +5,7 @@ require_once('config.php');
 // Database Connection
 $con = mysqli_connect($dbhost, $dbuser, $dbpassword, $dbname);
 if (mysqli_connect_errno()) {
-    die("Unable connect to database");
+	die("Unable connect to database");
 }
 
 $username = htmlentities(trim($_GET['username']));
@@ -18,7 +18,7 @@ if ($stmt = mysqli_prepare($con, $query)) {
 	mysqli_stmt_execute($stmt);
 	mysqli_stmt_store_result($stmt);
 
-	if ( mysqli_stmt_num_rows($stmt) > 0 ) {
+	if (mysqli_stmt_num_rows($stmt) > 0) {
 
 		mysqli_stmt_bind_result($stmt, $db_email_id, $db_verified);
 
@@ -43,9 +43,7 @@ if ($stmt = mysqli_prepare($con, $query)) {
 					header("Location: login.php?login");
 					exit();
 				}
-
 			} else {
-				echo $ver_code;
 				die("Invalid verification code.");
 			}
 		}
