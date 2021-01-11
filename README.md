@@ -6,4 +6,4 @@ Public version can be found [here](https://wspaste.com)
 
 You can also find the example of using ads in admin panel [here](https://github.com/wsehl/wspaste/blob/master/theme/bulma/advertisement-examples.html)
 
-<img src="https://i.vgy.me/gxlDvb.png">
+<img src="https://i.vgy.me/gxlDvb.png" />
