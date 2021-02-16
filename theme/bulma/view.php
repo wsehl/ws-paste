@@ -86,88 +86,92 @@ $protocol = paste_protocol();
 						<?php } else { ?>
 							<!-- Paste Panel -->
 							<hr>
-							<h1 class="title is-6 mx-1"><?php echo $lang['modpaste']; ?><h1>
-									<form class="form-horizontal" name="mainForm" action="index.php" method="POST">
-										<nav class="level">
-											<div class="level-left">
-												<!-- Title -->
-												<div class="level-item is-pulled-left mx-1">
-													<p class="control has-icons-left">
-														<input type="text" class="input" name="title" placeholder="<?php echo $lang['pastetitle']; ?>" value="<?php echo ($p_title); ?>">
-														<span class="icon is-small is-left">
-															<i class="fa fa-font"></i></a>
-														</span>
-													</p>
-												</div>
-												<!-- Format -->
-												<div class="level-item is-pulled-left mx-1">
+							<h1 class="title is-5 mx-1"><?php echo $lang['modpaste']; ?></h1>
+							<form class="form-horizontal under" name="mainForm" action="index.php" method="POST">
+								<nav class="level navbar edit-navigation" id="edit-navigation">
+									<div class="container">
+										<div class="level-left">
+											<!-- Title -->
+											<div class="level-item is-pulled-left mx-1">
+												<p class="control has-icons-left">
+													<input type="text" class="input" name="title" placeholder="<?php echo $lang['pastetitle']; ?>" value="<?php echo ($p_title); ?>">
+													<span class="icon is-small is-left">
+														<i class="fa fa-font"></i></a>
+													</span>
+												</p>
+											</div>
+											<!-- Format -->
+											<div class="level-item is-pulled-left mx-1">
+												<div class="select">
 													<div class="select">
-														<div class="select">
-															<select data-live-search="true" name="format">
-																<?php // Show popular GeSHi formats
-																foreach ($geshiformats as $code => $name) {
-																	if (in_array($code, $popular_formats)) {
-																		$sel = ($p_code == $code) ? 'selected="selected"' : ' ';
-																		echo '<option ' . $sel . ' value="' . $code . '">' . $name . '</option>';
-																	}
+														<select data-live-search="true" name="format">
+															<?php // Show popular GeSHi formats
+															foreach ($geshiformats as $code => $name) {
+																if (in_array($code, $popular_formats)) {
+																	$sel = ($p_code == $code) ? 'selected="selected"' : ' ';
+																	echo '<option ' . $sel . ' value="' . $code . '">' . $name . '</option>';
 																}
+															}
 
-																echo '<option value="text">__________________</option>';
+															echo '<option value="text">__________________</option>';
 
-																// Show all GeSHi formats.
-																foreach ($geshiformats as $code => $name) {
-																	if (!in_array($code, $popular_formats)) {
-																		$sel = ($p_code == $code) ? 'selected="selected"' : '';
-																		echo '<option ' . $sel . ' value="' . $code . '">' . $name . '</option>';
-																	}
+															// Show all GeSHi formats.
+															foreach ($geshiformats as $code => $name) {
+																if (!in_array($code, $popular_formats)) {
+																	$sel = ($p_code == $code) ? 'selected="selected"' : '';
+																	echo '<option ' . $sel . ' value="' . $code . '">' . $name . '</option>';
 																}
-																?>
-															</select>
-														</div>
+															}
+															?>
+														</select>
 													</div>
 												</div>
-												<div class="level-item is-pulled-left mx-1">
-													<input class="button is-info" type="hidden" name="paste_id" value="<?php echo $paste_id; ?>" />
-												</div>
-												<div class="level-item is-pulled-left mx-1">
-													<a class="button" onclick="highlight(document.getElementById('code')); return false;"><i class="fa fa-indent"></i>&nbspHighlight</a>
-												</div>
-												<div class="level-item is-pulled-left mx-1">
-													<?php
-													if ($_SESSION['username'] == $p_member || $_SESSION['username'] == 'admin') {
-													?>
-														<input class="button is-info" type="submit" name="edit" id="edit" value="<?php echo $lang['editpaste']; ?>" />
-													<?php
-													} ?>
-												</div>
-												<div class="level-item is-pulled-left mx-1">
-													<input class="button is-info" type="submit" name="submit" id="submit" value="<?php echo $lang['forkpaste']; ?>" />
-												</div>
 											</div>
-										</nav>
-										<!-- Text area -->
-										<textarea style="line-height: 1.2;" class="textarea mx-1" rows="13" id="code" name="paste_data" onkeydown="return catchTab(this,event)" placeholder="helloworld"><?php echo $op_content; ?></textarea>
-										<br>
-										<nav class="level">
-											<div class="level-left">
-												<div class="level-item is-pulled-left mr-1">
-													<div class="field">
-														<div class="subtitle has-text-weight-semibold " style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;"><?php echo $lang['expiration']; ?></div>
-														<div class="control">
-															<!-- Expiry -->
-															<div class="select">
-																<select name="paste_expire_date">
-																	<?php// if (isset($_SESSION['token'])) {?>
-																	<option value="N" selected="selected">Never</option>
-																	<option value="self">View Once</option>
-																	<option value="10M">10 Minutes</option>
-																	<option value="1H">1 Hour</option>
-																	<option value="1D">1 Day</option>
-																	<option value="1W">1 Week</option>
-																	<option value="2W">2 Weeks</option>
-																	<option value="1M">1 Month</option>
-																	<?php// } else { ?>
-																	<!--
+											<div class="level-item is-pulled-left mx-1">
+												<input class="button is-info" type="hidden" name="paste_id" value="<?php echo $paste_id; ?>" />
+											</div>
+											<div class="level-item is-pulled-left mx-1">
+												<a class="button" onclick="highlight(document.getElementById('code')); return false;"><i class="fa fa-indent"></i>&nbspHighlight</a>
+											</div>
+											<div class="level-item is-pulled-left mx-1">
+												<?php
+												if ($_SESSION['username'] == $p_member || $_SESSION['username'] == 'admin') {
+												?>
+													<input class="button is-info" type="submit" name="edit" id="edit" value="<?php echo $lang['editpaste']; ?>" />
+												<?php
+												} ?>
+											</div>
+											<div class="level-item is-pulled-left mx-1">
+												<input class="button is-info" type="submit" name="submit" id="submit" value="<?php echo $lang['forkpaste']; ?>" />
+											</div>
+										</div>
+									</div>
+								</nav>
+								<!-- Text area -->
+								<div class="under">
+									<textarea style="line-height: 1.2;" class="textarea mx-1" rows="13" id="code" name="paste_data" onkeydown="return catchTab(this,event)" placeholder="helloworld"><?php echo $op_content; ?></textarea>
+								</div>
+								<br>
+								<nav class="level">
+									<div class="level-left">
+										<div class="level-item is-pulled-left mr-1">
+											<div class="field">
+												<div class="subtitle has-text-weight-semibold " style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;"><?php echo $lang['expiration']; ?></div>
+												<div class="control">
+													<!-- Expiry -->
+													<div class="select">
+														<select name="paste_expire_date">
+															<?php// if (isset($_SESSION['token'])) {?>
+															<option value="N" selected="selected">Never</option>
+															<option value="self">View Once</option>
+															<option value="10M">10 Minutes</option>
+															<option value="1H">1 Hour</option>
+															<option value="1D">1 Day</option>
+															<option value="1W">1 Week</option>
+															<option value="2W">2 Weeks</option>
+															<option value="1M">1 Month</option>
+															<?php// } else { ?>
+															<!--
 																		<option value="1D" selected="selected">1 Day</option>
 																		<option value="self">View Once</option>
 																		<option value="10M">10 Minutes</option>
@@ -176,69 +180,69 @@ $protocol = paste_protocol();
 																		<option disabled >1 Month (Register)</option>
 																		<option disabled >Never (Register)</option>
 																		-->
-																	<?php// } ?>
-																</select>
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="level-item is-pulled-left mx-1">
-													<div class="field">
-														<div class="subtitle has-text-weight-semibold " style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;"><?php echo $lang['visibility']; ?>&nbsp;&nbsp;</div>
-														<div class="control">
-															<!-- Visibility -->
-															<div class="select">
-																<select name="visibility">
-																	<option value="0" <?php echo ($p_visible == "0") ? 'selected="selected"' : ''; ?>>Public</option>
-																	<option value="1" <?php echo ($p_visible == "1") ? 'selected="selected"' : ''; ?>>Unlisted</option>
-																	<?php if (isset($_SESSION['token'])) { ?>
-																		<option value="2" <?php echo ($p_visible == "2") ? 'selected="selected"' : ''; ?>>Private</option>
-																	<?php } else { ?>
-																		<option disabled>Private</option>
-																	<?php } ?>
-																</select>
-															</div>
-														</div>
+															<?php// } ?>
+														</select>
 													</div>
 												</div>
 											</div>
-										</nav>
-										<nav>
-											<div class="level-left">
-												<!-- Password -->
-												<div class="columns">
-													<div class="column">
-														<input type="text" class="input" name="pass" id="pass" value="" placeholder="<?php echo $lang['pwopt']; ?>">
+										</div>
+										<div class="level-item is-pulled-left mx-1">
+											<div class="field">
+												<div class="subtitle has-text-weight-semibold " style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;"><?php echo $lang['visibility']; ?>&nbsp;&nbsp;</div>
+												<div class="control">
+													<!-- Visibility -->
+													<div class="select">
+														<select name="visibility">
+															<option value="0" <?php echo ($p_visible == "0") ? 'selected="selected"' : ''; ?>>Public</option>
+															<option value="1" <?php echo ($p_visible == "1") ? 'selected="selected"' : ''; ?>>Unlisted</option>
+															<?php if (isset($_SESSION['token'])) { ?>
+																<option value="2" <?php echo ($p_visible == "2") ? 'selected="selected"' : ''; ?>>Private</option>
+															<?php } else { ?>
+																<option disabled>Private</option>
+															<?php } ?>
+														</select>
 													</div>
 												</div>
 											</div>
-										</nav>
-										<br>
-										<nav>
-											<div class="level-left">
-												<!-- Encrypted -->
-												<div class="b-checkbox is-info is-inline">
-													<?php
-													$encrypted_checked = "";
-													if ($_POST) {
-														// We came here from an error, carry the checkbox setting forward
-														if (isset($_POST['encrypted'])) {
-															$encrypted_checked = "checked";
-														}
-													} else {
-														// Fresh paste. Default to encrypted on
-														$encrypted_checked = "checked";
-													}
-													?>
-													<input class="is-checkradio is-info" id="encrypt" name="encrypted" type="checkbox" <?php echo $encrypted_checked; ?>>
-													<label for="encrypt">
-														<?php echo $lang['encrypt']; ?>
-													</label>
-												</div>
-										</nav>
-										<?php echo $ads_2; ?>
-									</form>
-								<?php } ?>
+										</div>
+									</div>
+								</nav>
+								<nav>
+									<div class="level-left">
+										<!-- Password -->
+										<div class="columns">
+											<div class="column">
+												<input type="text" class="input" name="pass" id="pass" value="" placeholder="<?php echo $lang['pwopt']; ?>">
+											</div>
+										</div>
+									</div>
+								</nav>
+								<br>
+								<nav>
+									<div class="level-left">
+										<!-- Encrypted -->
+										<div class="b-checkbox is-info is-inline">
+											<?php
+											$encrypted_checked = "";
+											if ($_POST) {
+												// We came here from an error, carry the checkbox setting forward
+												if (isset($_POST['encrypted'])) {
+													$encrypted_checked = "checked";
+												}
+											} else {
+												// Fresh paste. Default to encrypted on
+												$encrypted_checked = "checked";
+											}
+											?>
+											<input class="is-checkradio is-info" id="encrypt" name="encrypted" type="checkbox" <?php echo $encrypted_checked; ?>>
+											<label for="encrypt">
+												<?php echo $lang['encrypt']; ?>
+											</label>
+										</div>
+								</nav>
+								<?php echo $ads_2; ?>
+							</form>
+						<?php } ?>
 			</div>
 			<?php require_once('theme/' . $default_theme . '/sidebar.php'); ?>
 		</div>
