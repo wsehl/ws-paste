@@ -82,9 +82,9 @@
 <script type="text/javascript" src="<?php echo '//' . $baseurl . '/theme/' . $default_theme; ?>/js/paste.js"></script>
 <script type="text/javascript" src="<?php echo '//' . $baseurl . '/theme/' . $default_theme; ?>/js/modal-fx.min.js"></script>
 <script type="text/javascript" src="<?php echo '//' . $baseurl . '/theme/' . $default_theme; ?>/js/datatables.min.js"></script>
+<script type="text/javascript" src="<?php echo '//' . $baseurl . '/theme/' . $default_theme; ?>/js/autosize.min.js"></script>
 
 <!-- Auto heigth -->
-<script src="https://rawgit.com/jackmoore/autosize/master/dist/autosize.min.js"></script>
 <script>
   autosize(document.getElementById("code"));
 </script>
